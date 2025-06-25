@@ -1,0 +1,108 @@
+import random
+from art import logo
+
+cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+player_cards = []
+comp_cards = []
+
+# Game start choice
+def start():
+    starting_bet = input("Do you want to play a game of Blackjack? Type 'y' or 'n':    ")
+    if starting_bet == 'y':
+        print("\n" * 20)
+        print(logo)
+        start_game = True
+        return start_game
+    else:
+        start_game = False
+        return start_game
+
+# Game mechanics
+def show_score(current_score):
+    print(f"Your cards: {player_cards}, current score: {current_score}")
+    print(f"Computer's first card: {comp_cards[1]}")
+    # print(f"All of computer's cards: {comp_cards}. Score shown: {comp_score_shown}. Total score: {comp_score_hidden}")
+    return
+
+def hit_or_stay():
+    hit = input("Type 'y' to get another card, type 'n' to pass:    ")
+    if hit == 'y':
+        player_card_hit = random.choice(cards)
+        player_cards.append(player_card_hit)
+        player_score = calculate_player_score()
+        hand = player_cards
+        check_for_ace(player_score, hand)
+
+        # check_bust(player_score)
+        return player_score
+    elif hit == 'n':
+        comp_score = calculate_comp_score()
+        player_score = calculate_player_score()
+        while comp_score < 18:
+            comp_card_hit = random.choice(cards)
+            comp_cards.append(comp_card_hit)
+            comp_score = calculate_comp_score()
+        print(f"\n\nYour final hand: {player_cards}, current score: {player_score}")
+        print(f"Computer's final hand: {comp_cards}, final score: {comp_score}\n")
+        if player_score > comp_score:
+            print("You win!")
+        elif player_score == comp_score:
+            print("Draw.")
+        elif player_score < comp_score and comp_score <= 21:
+            print("House wins.")
+        else:
+            print("House busts! You win!")
+
+
+# Score calculations
+
+def calculate_player_score():
+    player_score = sum(player_cards)
+    return player_score
+
+def calculate_comp_score():
+    comp_score = sum(comp_cards)
+    return comp_score
+
+def check_for_ace(score, hand):
+    if score > 21:
+        for index, num in enumerate(hand):
+            if num == 11:
+                player_cards[index] = 1
+                score = calculate_player_score()
+                check_score(score)
+    check_score(score)
+
+def check_score(score):
+    show_score(score)
+    if score > 21:
+        print("\nYou bust! loser!")
+    # elif score == 21:
+    #     print("\n21! You win!")
+    else:
+        hit_or_stay()
+
+
+# Starting the game!
+
+start_game = start()
+continue_game = True
+while continue_game == True:
+    if start_game == True:
+        for num in range(0,2):
+            player_cards.append(random.choice(cards))
+            comp_cards.append(random.choice(cards))
+
+        player_score = calculate_player_score()
+        check_for_ace(player_score, player_cards)
+
+    continue_game_input = input("\nDo you wish to play again? 'y' or 'n'?    ")
+    if continue_game_input == 'y':
+        print("\n" * 20)
+        print(logo)
+        player_cards = []
+        comp_cards = []
+        continue_game = True
+    else:
+        continue_game = False
+
